@@ -57,7 +57,15 @@ export function createRegionGroups(nodes: AnyOutbound[]): UrltestOutbound[] {
     const groups: UrltestOutbound[] = [];
     for (const [tag, outbounds] of regionMap) {
         if (outbounds.length > 0) {
-            groups.push({ type: "urltest", tag, outbounds });
+            groups.push({
+                type: "urltest",
+                tag,
+                outbounds,
+                url: "https://www.gstatic.com/generate_204",
+                interval: "1m",
+                tolerance: 100,
+                interrupt_exist_connections: false,
+            });
         }
     }
 
