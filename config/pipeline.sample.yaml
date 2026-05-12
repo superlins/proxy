@@ -1,0 +1,23 @@
+# proxy-gen pipeline configuration
+# Copy this file to pipeline.yaml and fill in your subscription URLs
+
+providers:
+  - name: "provider-a"
+    source: "<your-subscription-url-here>"
+  - name: "provider-b"
+    source: "vless://uuid@host:port?security=..."
+
+stages:
+  - name: Filter
+    filter:
+      exclude: ["到期", "测试|内测|过期"]
+  - name: Rename
+    rename:
+      flag: true
+  - name: Group
+    group:
+      region: true
+
+output:
+  template: "v1.13.json"
+  dest: "generated/config.json"
