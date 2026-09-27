@@ -18,6 +18,7 @@ const PipelineFullConfigSchema = z.object({
         source: z.string(),
         type: z.enum(["http", "file", "uri"]).optional(),
         timeout: z.number().optional(),
+        userAgent: z.string().optional(),
     })),
     stages: z.array(z.object({
         name: z.string(),

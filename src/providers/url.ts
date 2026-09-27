@@ -5,6 +5,7 @@ export class UrlProvider implements Provider {
         public readonly name: string,
         private readonly url: string,
         private readonly timeout = 15000,
+        private readonly userAgent = "ClashMeta",
     ) {}
 
     async fetch(): Promise<string> {
@@ -17,7 +18,7 @@ export class UrlProvider implements Provider {
             const res = await fetch(this.url, {
                 signal: controller.signal,
                 headers: {
-                    "User-Agent": "sing-box/1.13.0 proxy-gen/0.1.0",
+                    "User-Agent": this.userAgent,
                 },
             });
 

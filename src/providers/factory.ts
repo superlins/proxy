@@ -11,6 +11,7 @@ export interface ProviderSource {
     source: string;
     type?: ProviderSourceType;
     timeout?: number;
+    userAgent?: string;
 }
 
 export function createProvider(source: ProviderSource): Provider {
@@ -18,7 +19,7 @@ export function createProvider(source: ProviderSource): Provider {
 
     switch (resolvedType) {
         case "http":
-            return new UrlProvider(source.name, source.source, source.timeout);
+            return new UrlProvider(source.name, source.source, source.timeout, source.userAgent);
         case "file":
             return new FileProvider(source.name, source.source);
         case "uri":

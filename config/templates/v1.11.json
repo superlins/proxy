@@ -1,0 +1,188 @@
+{
+  "log": {
+    "disabled": false,
+    "level": "error",
+    "output": "sing-box.log",
+    "timestamp": true
+  },
+  "ntp": {
+    "enabled": true,
+    "server": "ntp.aliyun.com",
+    "server_port": 123,
+    "interval": "30m"
+  },
+  "dns": {
+    "fakeip": {
+      "enabled": true,
+      "inet4_range": "198.18.0.0/15",
+      "inet6_range": "fc00::/18"
+    },
+    "servers": [
+      {
+        "tag": "dns-direct",
+        "address": "223.5.5.5"
+      },
+      {
+        "tag": "dns-proxy",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "PROXY"
+      },
+      {
+        "tag": "dns-fakeip",
+        "address": "fakeip"
+      }
+    ],
+    "rules": [
+      {
+        "ip_is_private": true,
+        "server": "dns-direct"
+      },
+      {
+        "rule_set": "ads",
+        "action": "reject"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "dns-direct"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "server": "dns-fakeip"
+      }
+    ],
+    "final": "dns-proxy",
+    "strategy": "prefer_ipv4",
+    "reverse_mapping": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.18.0.1/30",
+        "fdfe:dcba:9876::0/126"
+      ],
+      "auto_route": true,
+      "strict_route": true,
+      "route_exclude_address_set": [
+        "geoip-cn"
+      ],
+      "stack": "system"
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "DIRECT",
+      "type": "direct"
+    },
+    {
+      "tag": "PROXY",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT",
+        "AUTO"
+      ],
+      "default": "AUTO"
+    },
+    {
+      "tag": "AI",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT",
+        "PROXY"
+      ],
+      "default": "cc0"
+    },
+    {
+      "tag": "AUTO",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 100,
+      "interrupt_exist_connections": false
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "protocol": "quic",
+        "action": "reject"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geoip-cn"
+        ],
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": "geosite-category-ai-!cn",
+        "outbound": "AI"
+      },
+      {
+        "rule_set": "geosite-gfw",
+        "outbound": "PROXY"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "ads",
+        "type": "remote",
+        "format": "source",
+        "url": "https://fastly.jsdelivr.net/gh/TG-Twilight/AWAvenue-Ads-Rule@main/Filters/AWAvenue-Ads-Rule-Singbox.json",
+        "download_detour": "DIRECT"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cn.srs",
+        "download_detour": "DIRECT"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
+        "download_detour": "DIRECT"
+      },
+      {
+        "tag": "geosite-gfw",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/gfw.srs",
+        "download_detour": "DIRECT"
+      },
+      {
+        "tag": "geosite-category-ai-!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ai-!cn.srs",
+        "download_detour": "DIRECT"
+      }
+    ],
+    "final": "PROXY",
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "ui"
+    }
+  }
+}
