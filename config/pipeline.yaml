@@ -7,9 +7,9 @@ providers:
   - name: "anotheropenlabs"
     source: "vless://b053335f-d207-490f-a3d8-2d1e2be39d6f@35.212.251.143:443?encryption=none&fp=chrome&pbk=BAZ8k4i5DQs1mRAjoFX5kvYUIhIx2QpG2yo62yvG6B0&security=reality&sid=bd172b7a5ce27d&sni=amazon.com&spx=%2F2ixKxBYpDn8OAl9&type=tcp#cc2"
   - name: "lienider"
-    source: "vless://bebd7cb8-5207-468b-8c12-5d27a6cef4d9@35.212.234.159:443?encryption=none&fp=chrome&pbk=X_OUjJIpQ48USSxNpZQkOSlNW0PvwNZFP25vno8CNBQ&security=reality&sid=3846e5&sni=corporate.amazon.com&spx=%2FkPP2dG3yu34lpEi&type=tcp#cc1"
+    source: "vless://bebd7cb8-5207-468b-8c12-5d27a6cef4d9@35.212.163.208:443?encryption=none&fp=chrome&pbk=X_OUjJIpQ48USSxNpZQkOSlNW0PvwNZFP25vno8CNBQ&security=reality&sid=5db8c9ba0f09bd&sni=iphone.amazon.com&spx=%2FjVy0JG7YFmRf7DP&type=tcp#cc1"
   - name: "superlins1024"
-    source: "vless://339adf08-cfdb-445e-a8fe-714988bd9e09@35.212.168.60:443?encryption=none&fp=chrome&pbk=Qip3VeD3mLZfmiFB_SDGkspv3CLJTa4gsY5a_jInayI&security=reality&sid=e2ab&sni=shop.business.amazon.com&spx=%2F45bb1ea30f19ad1&type=tcp#cc0"
+    source: "vless://339adf08-cfdb-445e-a8fe-714988bd9e09@34.4.104.241:443?encryption=none&fp=chrome&pbk=Qip3VeD3mLZfmiFB_SDGkspv3CLJTa4gsY5a_jInayI&security=reality&sid=98&sni=buybox.amazon.com&spx=%2F45bb1ea30f19ad1&type=tcp#cc0"
 
 stages:
   - name: Filter

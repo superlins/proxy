@@ -48,8 +48,8 @@ export function build({ nodes, regionGroups, template }: BuildInput): BuildOutpu
     // 4. Update AUTO urltest to include all nodes
     updateUrltestOutbound(outbounds, nodes.map((n) => n.tag));
 
-    // 5. Update PROXY selector to include AUTO and region groups
-    updateProxyOutbound(outbounds, regionGroups);
+    // 5. Update PROXY selector to include AUTO, region groups, and nodes
+    updateProxyOutbound(outbounds, regionGroups, nodes);
 
     return { config };
 }
@@ -90,10 +90,16 @@ function updateUrltestOutbound(
 function updateProxyOutbound(
     outbounds: Array<Record<string, unknown>>,
     regionGroups: GroupOutbound[],
+    nodes: AnyOutbound[],
 ): void {
     const proxy = outbounds.find((o) => o.tag === "PROXY") as Record<string, unknown> | undefined;
     if (proxy) {
-        (proxy.outbounds as string[]) = ["DIRECT", "AUTO", ...regionGroups.map((g) => g.tag)];
+        (proxy.outbounds as string[]) = [
+            "DIRECT",
+            "AUTO",
+            ...regionGroups.map((g) => g.tag),
+            ...nodes.map((n) => n.tag),
+        ];
         (proxy.default as string | undefined) ??= "AUTO";
     }
 }

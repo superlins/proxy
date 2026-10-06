@@ -54,7 +54,7 @@
       }
     ],
     "final": "dns-proxy",
-    "strategy": "prefer_ipv4",
+    "strategy": "ipv4_only",
     "reverse_mapping": true
   },
   "inbounds": [
@@ -67,9 +67,6 @@
       ],
       "auto_route": true,
       "strict_route": true,
-      "route_exclude_address_set": [
-        "geoip-cn"
-      ],
       "stack": "system"
     }
   ],
