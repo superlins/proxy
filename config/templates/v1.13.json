@@ -90,7 +90,7 @@
         "DIRECT",
         "PROXY"
       ],
-      "default": "cc0"
+      "default": "PROXY"
     },
     {
       "tag": "Google",

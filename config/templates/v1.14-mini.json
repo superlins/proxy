@@ -1,42 +1,28 @@
 {
   "log": {
-    "disabled": false,
     "level": "error",
-    "output": "sing-box.log",
     "timestamp": true
   },
-  "ntp": {
-    "enabled": true,
-    "server": "ntp.aliyun.com",
-    "server_port": 123,
-    "interval": "30m"
-  },
   "dns": {
-    "fakeip": {
-      "enabled": true,
-      "inet4_range": "198.18.0.0/15",
-      "inet6_range": "fc00::/18"
-    },
     "servers": [
       {
         "tag": "dns-direct",
-        "address": "223.5.5.5"
+        "type": "udp",
+        "server": "223.5.5.5"
       },
       {
         "tag": "dns-proxy",
-        "address": "https://8.8.8.8/dns-query",
+        "type": "https",
+        "server": "8.8.8.8",
         "detour": "PROXY"
       },
       {
         "tag": "dns-fakeip",
-        "address": "fakeip"
+        "type": "fakeip",
+        "inet4_range": "198.18.0.0/15"
       }
     ],
     "rules": [
-      {
-        "ip_is_private": true,
-        "server": "dns-direct"
-      },
       {
         "rule_set": "ads",
         "action": "reject"
@@ -57,6 +43,12 @@
     "strategy": "ipv4_only",
     "reverse_mapping": true
   },
+  "http_clients": [
+    {
+      "tag": "client-proxy",
+      "detour": "PROXY"
+    }
+  ],
   "inbounds": [
     {
       "type": "tun",
@@ -86,6 +78,24 @@
     },
     {
       "tag": "AI",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT",
+        "PROXY"
+      ],
+      "default": "PROXY"
+    },
+    {
+      "tag": "Google",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT",
+        "PROXY"
+      ],
+      "default": "PROXY"
+    },
+    {
+      "tag": "Twitter",
       "type": "selector",
       "outbounds": [
         "DIRECT",
@@ -132,6 +142,17 @@
         "outbound": "AI"
       },
       {
+        "rule_set": [
+          "geosite-google",
+          "geosite-googlefcm"
+        ],
+        "outbound": "Google"
+      },
+      {
+        "rule_set": "geosite-twitter",
+        "outbound": "Twitter"
+      },
+      {
         "rule_set": "geosite-gfw",
         "outbound": "PROXY"
       }
@@ -141,45 +162,54 @@
         "tag": "ads",
         "type": "remote",
         "format": "source",
-        "url": "https://fastly.jsdelivr.net/gh/TG-Twilight/AWAvenue-Ads-Rule@main/Filters/AWAvenue-Ads-Rule-Singbox.json",
-        "download_detour": "DIRECT"
+        "url": "https://fastly.jsdelivr.net/gh/TG-Twilight/AWAvenue-Ads-Rule@main/Filters/AWAvenue-Ads-Rule-Singbox.json"
       },
       {
         "tag": "geosite-cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cn.srs",
-        "download_detour": "DIRECT"
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cn.srs"
       },
       {
         "tag": "geoip-cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
-        "download_detour": "DIRECT"
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs"
       },
       {
         "tag": "geosite-gfw",
         "type": "remote",
         "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/gfw.srs",
-        "download_detour": "DIRECT"
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/gfw.srs"
+      },
+      {
+        "tag": "geosite-google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google.srs"
+      },
+      {
+        "tag": "geosite-googlefcm",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/googlefcm.srs"
       },
       {
         "tag": "geosite-category-ai-!cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ai-!cn.srs",
-        "download_detour": "DIRECT"
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ai-!cn.srs"
+      },
+      {
+        "tag": "geosite-twitter",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/twitter.srs"
       }
     ],
     "final": "PROXY",
-    "auto_detect_interface": true
-  },
-  "experimental": {
-    "clash_api": {
-      "external_controller": "127.0.0.1:9090",
-      "external_ui": "ui"
-    }
+    "auto_detect_interface": true,
+    "default_domain_resolver": "dns-direct",
+    "default_http_client": "client-proxy"
   }
 }
