@@ -38,18 +38,21 @@
         "server": "dns-direct"
       },
       {
+        "query_type": "AAAA",
+        "action": "predefined",
+        "rcode": "NOERROR"
+      },
+      {
         "rule_set": "ads",
-        "action": "reject"
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
       },
       {
         "rule_set": "geosite-cn",
         "server": "dns-direct"
       },
       {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
+        "query_type": "A",
         "server": "dns-fakeip"
       }
     ],
@@ -61,10 +64,7 @@
     {
       "type": "tun",
       "tag": "tun-in",
-      "address": [
-        "172.18.0.1/30",
-        "fdfe:dcba:9876::0/126"
-      ],
+      "address": "172.18.0.1/30",
       "auto_route": true,
       "strict_route": true,
       "stack": "system"
@@ -117,6 +117,10 @@
         "action": "reject"
       },
       {
+        "rule_set": "ads",
+        "action": "reject"
+      },
+      {
         "ip_is_private": true,
         "outbound": "DIRECT"
       },
@@ -130,18 +134,14 @@
       {
         "rule_set": "geosite-category-ai-!cn",
         "outbound": "AI"
-      },
-      {
-        "rule_set": "geosite-gfw",
-        "outbound": "PROXY"
       }
     ],
     "rule_set": [
       {
         "tag": "ads",
         "type": "remote",
-        "format": "source",
-        "url": "https://fastly.jsdelivr.net/gh/TG-Twilight/AWAvenue-Ads-Rule@main/Filters/AWAvenue-Ads-Rule-Singbox.json",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ads-all@ads.srs",
         "download_detour": "DIRECT"
       },
       {
@@ -156,13 +156,6 @@
         "type": "remote",
         "format": "binary",
         "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
-        "download_detour": "DIRECT"
-      },
-      {
-        "tag": "geosite-gfw",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/gfw.srs",
         "download_detour": "DIRECT"
       },
       {

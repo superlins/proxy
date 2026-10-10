@@ -2,10 +2,8 @@
 # Copy this file to pipeline.yaml and fill in your subscription URLs
 
 providers:
-  - name: "provider-a"
-    source: "<your-subscription-url-here>"
-  - name: "provider-b"
-    source: "vless://uuid@host:port?security=..."
+  - name: "provider"
+    source: "https://35.212.251.143:2096/cc/0yk73fh5sc7109og"
 
 stages:
   - name: Filter
